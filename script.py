@@ -1,14 +1,21 @@
 import openai
 import os
 import json
+import requests
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv())
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
+SYSTEM_MESSAGE = os.getenv('SYSTEM_MESSAGE')
+moderation_endpoint = 'https://api.openai.com/v1/engines/content-moderation/moderate/'
 content_path = r'C:\Users\hicha\chatbot\content'
 
 
-
+def check_moderation(user_input):
+    moderation_output = openai.Moderation.create(user_input)
+    moderatio_results = moderation_output["results"][0]
+    input_statut = moderatio_results["flagged"]
+    return input_statut
 
 def get_completion_from_messages(messages, model="gpt-3.5-turbo", temperature=0):
     """
@@ -161,11 +168,13 @@ def conversation_loup(context):
             if user_input == 'yes' :
                 save_conversation(context, user_input)  # Save the conversation
             break
-
         try :
-            response = collect_messages(user_input, context)  # Generate the assistant's response
-            print("Chatbot:", response)
-
+            input_statut = check_moderation(user_input)
+            if input_statut == False :    
+                response = collect_messages(user_input, context)  # Generate the assistant's response
+                print("Chatbot:", response)
+            else : 
+                print('Chatbot: I\'m sorry, but your input violates our content guidelines.')
         except Exception as e :
             print(f"An error occurred: {e}")
 
@@ -199,7 +208,7 @@ def recover_conversation():
 
     else : 
         print('Chatbot: There is no saved conversation! Let\'s start a new one')
-        context = []
+        context = json.loads(SYSTEM_MESSAGE)
     
     # Return the loaded conversation context
     return context
@@ -225,7 +234,7 @@ def main():
             break
         
         elif user_input.lower() == 'no' :
-            context = []
+            context = json.loads(SYSTEM_MESSAGE)
             print('Chatbot: Ok! How can I assist you today?')
             break
         
