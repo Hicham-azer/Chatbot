@@ -30,7 +30,7 @@ Follow these steps to set up and run the chatbot project:
     source venv_name/bin/activate
     ```
 
-3. **Install Dependencies from the Requirements File:** With the virtual environment activated, navigate to the directory where your `requirements.txt` file is located.
+3. **Install Dependencies from the Requirements File:** With the virtual environment activated, Install dependencies form `requirements.txt` file.
     ```sh
     pip install -r requirements.txt
     ```
