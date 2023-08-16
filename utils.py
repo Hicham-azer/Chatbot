@@ -75,7 +75,7 @@ def collect_messages(user_input, context):
 
 def save_conversation_file(conversation, conversation_name, content_directory):
     """
-    Save a conversation to a JSON file.
+    Store the JSON file.
 
     Args:
         conversation (list): The conversation to be saved, represented as a list of message objects.
